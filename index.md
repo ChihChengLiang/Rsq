@@ -45,7 +45,7 @@ y = 10 * x + 5 + rnorm(N, 0, 1000)
 plot(x, y)  # It's hard to tell what y could be given x, but the y dots appearently go upward as x increases.
 ```
 
-<img src="assets/fig/unnamed-chunk-2.png" title="plot of chunk unnamed-chunk-2" alt="plot of chunk unnamed-chunk-2" style="display: block; margin: auto;" />
+<img src="figure/unnamed-chunk-2.png" title="plot of chunk unnamed-chunk-2" alt="plot of chunk unnamed-chunk-2" style="display: block; margin: auto;" />
 
 
 --- 

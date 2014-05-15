@@ -8,9 +8,9 @@ highlighter : highlight.js  # {highlight.js, prettify, highlight}
 hitheme     : tomorrow      # 
 widgets     : [mathjax]     # {mathjax, quiz, bootstrap}
 mode        : selfcontained # {standalone, draft}
-github      :
-  user:"SatoshiLiang"
-  repo:"Rsq"
+github:
+  user: SatoshiLiang
+  repo: Rsq
 ---
 
 ## The Argument

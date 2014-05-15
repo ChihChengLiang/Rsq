@@ -1,0 +1,241 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <title>Why a good model does not necessarily have high $R^2$</title>
+  <meta charset="utf-8">
+  <meta name="description" content="Why a good model does not necessarily have high $R^2$">
+  <meta name="author" content="liangcc">
+  <meta name="generator" content="slidify" />
+  <meta name="apple-mobile-web-app-capable" content="yes">
+  <meta http-equiv="X-UA-Compatible" content="chrome=1">
+  <link rel="stylesheet" href="libraries/frameworks/io2012/css/default.css" media="all" >
+  <link rel="stylesheet" href="libraries/frameworks/io2012/css/phone.css" 
+    media="only screen and (max-device-width: 480px)" >
+  <link rel="stylesheet" href="libraries/frameworks/io2012/css/slidify.css" >
+  <link rel="stylesheet" href="libraries/highlighters/highlight.js/css/tomorrow.css" />
+  <base target="_blank"> <!-- This amazingness opens all links in a new tab. -->  <link rel=stylesheet href="./assets/css/ribbons.css"></link>
+
+  
+  <!-- Grab CDN jQuery, fall back to local if offline -->
+  <script src="http://ajax.aspnetcdn.com/ajax/jQuery/jquery-1.7.min.js"></script>
+  <script>window.jQuery || document.write('<script src="libraries/widgets/quiz/js/jquery.js"><\/script>')</script> 
+  <script data-main="libraries/frameworks/io2012/js/slides" 
+    src="libraries/frameworks/io2012/js/require-1.0.8.min.js">
+  </script>
+  
+  
+
+</head>
+<body style="opacity: 0">
+  <slides class="layout-widescreen">
+    
+    <!-- LOGO SLIDE -->
+        <slide class="title-slide segue nobackground">
+  <hgroup class="auto-fadein">
+    <h1>Why a good model does not necessarily have high $R^2$</h1>
+    <h2>Understand it in less than 10 mins</h2>
+    <p>liangcc<br/></p>
+  </hgroup>
+    <a href="https://github.com///zipball/gh-pages" class="example">
+     Download
+    </a>
+  <article></article>  
+</slide>
+    
+
+    <!-- SLIDES -->
+    <slide class="" id="slide-1" style="background:;">
+  <hgroup>
+    <h2>The Argument</h2>
+  </hgroup>
+  <article data-timings="">
+    <ol>
+<li>Most of the time, your data contains a lot of unpredictable noise, so the R squared value of your best model is inherently limited.</li>
+<li>You can add irrelevant feature to your model to improve (meaningless) R squared value.</li>
+</ol>
+
+  </article>
+  <!-- Presenter Notes -->
+</slide>
+
+<slide class="class" id="id" style="background:;">
+  <hgroup>
+    <h2>Why not a experiment</h2>
+  </hgroup>
+  <article data-timings="">
+    <p>Suppose this is how your data generated:</p>
+
+<ul>
+<li>your independent variable \(x\) is a number between 1 and 100</li>
+<li>your dependent variable \(y\) is a (linear) function of \(x\) with hairy noise \(\epsilon \sim \mathcal{N}(0,1000)\). For each \(i\) in \(x\) we have \[y_i=3x_i+5+ \epsilon_i\]</li>
+</ul>
+
+<pre><code class="r"># with large enough amount of sample
+N = 10000
+x = seq(0, 100, length.out = N)  #  num [1:10000] 0 0.01 0.02 0.03 0.04 ...99.98 99.99 100.00
+
+# This is the &#39;Data Generating Process&#39;. Note that the large sigma makes the
+# noise noisy
+y = 10 * x + 5 + rnorm(N, 0, 1000)
+</code></pre>
+
+  </article>
+  <!-- Presenter Notes -->
+</slide>
+
+<slide class="" id="slide-3" style="background:;">
+  <hgroup>
+    <h2>Why not a experiment</h2>
+  </hgroup>
+  <article data-timings="">
+    <pre><code class="r">plot(x, y)  # It&#39;s hard to tell what y could be given x, but the y dots appearently go upward as x increases.
+</code></pre>
+
+<p><img src="assets/fig/unnamed-chunk-2.png" title="plot of chunk unnamed-chunk-2" alt="plot of chunk unnamed-chunk-2" style="display: block; margin: auto;" /></p>
+
+  </article>
+  <!-- Presenter Notes -->
+</slide>
+
+<slide class="" id="slide-4" style="background:;">
+  <article data-timings="">
+    <pre><code class="r">model= lm(y~x)
+summary(model) # The model has significant x but poor R^2 fit.
+
+# Call:
+# lm(formula = y ~ x)
+# 
+# Residuals:
+#     Min      1Q  Median      3Q     Max 
+# -3541.2  -667.0    10.2   667.4  4218.0 
+# 
+# Coefficients:
+#             Estimate Std. Error t value Pr(&gt;|t|)    
+# (Intercept) -13.8934    19.8449   -0.70    0.484    
+# x            10.1551     0.3437   29.55   &lt;2e-16 ***
+# ---
+# Signif. codes:  0 ‘***’ 0.001 ‘**’ 0.01 ‘*’ 0.05 ‘.’ 0.1 ‘ ’ 1
+# 
+# Residual standard error: 992.3 on 9998 degrees of freedom
+# Multiple R-squared:  0.0803,  Adjusted R-squared:  0.08021 
+# F-statistic: 872.9 on 1 and 9998 DF,  p-value: &lt; 2.2e-16
+</code></pre>
+
+  </article>
+  <!-- Presenter Notes -->
+</slide>
+
+<slide class="" id="slide-5" style="background:;">
+  <hgroup>
+    <h2>For the second argument</h2>
+  </hgroup>
+  <article data-timings="">
+    <p>We will introduce another irrelevant feature \(z\), a pure noise, to fit the data.</p>
+
+<pre><code class="r">z = rnorm(N, 0, 30)
+model2 = lm(y ~ x + z)
+</code></pre>
+
+  </article>
+  <!-- Presenter Notes -->
+</slide>
+
+<slide class="" id="slide-6" style="background:;">
+  <article data-timings="">
+    <p>Surprisingly, The multiple R-squared is improved! </p>
+
+<pre><code class="r">summary(model2)
+# Call:
+# lm(formula = y ~ x + z)
+# 
+# Residuals:
+#     Min      1Q  Median      3Q     Max 
+# -3520.5  -665.6    11.9   667.6  4214.7 
+# 
+# Coefficients:
+#             Estimate Std. Error t value Pr(&gt;|t|)    
+# (Intercept) -13.9364    19.8446  -0.702    0.483    
+# x            10.1546     0.3437  29.544   &lt;2e-16 ***
+# z            -0.3879     0.3309  -1.172    0.241    
+# ---
+# Signif. codes:  0 ‘***’ 0.001 ‘**’ 0.01 ‘*’ 0.05 ‘.’ 0.1 ‘ ’ 1
+# 
+# Residual standard error: 992.3 on 9997 degrees of freedom
+# Multiple R-squared:  0.08042,  Adjusted R-squared:  0.08024 
+# F-statistic: 437.2 on 2 and 9997 DF,  p-value: &lt; 2.2e-16
+</code></pre>
+
+  </article>
+  <!-- Presenter Notes -->
+</slide>
+
+    <slide class="backdrop"></slide>
+  </slides>
+  <div class="pagination pagination-small" id='io2012-ptoc' style="display:none;">
+    <ul>
+      <li>
+      <a href="#" target="_self" rel='tooltip' 
+        data-slide=1 title='The Argument'>
+         1
+      </a>
+    </li>
+    <li>
+      <a href="#" target="_self" rel='tooltip' 
+        data-slide=2 title='Why not a experiment'>
+         2
+      </a>
+    </li>
+    <li>
+      <a href="#" target="_self" rel='tooltip' 
+        data-slide=3 title='Why not a experiment'>
+         3
+      </a>
+    </li>
+    <li>
+      <a href="#" target="_self" rel='tooltip' 
+        data-slide=4 title=''>
+         4
+      </a>
+    </li>
+    <li>
+      <a href="#" target="_self" rel='tooltip' 
+        data-slide=5 title='For the second argument'>
+         5
+      </a>
+    </li>
+    <li>
+      <a href="#" target="_self" rel='tooltip' 
+        data-slide=6 title=''>
+         6
+      </a>
+    </li>
+  </ul>
+  </div>  <!--[if IE]>
+    <script 
+      src="http://ajax.googleapis.com/ajax/libs/chrome-frame/1/CFInstall.min.js">  
+    </script>
+    <script>CFInstall.check({mode: 'overlay'});</script>
+  <![endif]-->
+</body>
+  <!-- Load Javascripts for Widgets -->
+  
+  <!-- MathJax: Fall back to local if CDN offline but local image fonts are not supported (saves >100MB) -->
+  <script type="text/x-mathjax-config">
+    MathJax.Hub.Config({
+      tex2jax: {
+        inlineMath: [['$','$'], ['\\(','\\)']],
+        processEscapes: true
+      }
+    });
+  </script>
+  <script type="text/javascript" src="http://cdn.mathjax.org/mathjax/2.0-latest/MathJax.js?config=TeX-AMS-MML_HTMLorMML"></script>
+  <!-- <script src="https://c328740.ssl.cf1.rackcdn.com/mathjax/2.0-latest/MathJax.js?config=TeX-AMS-MML_HTMLorMML">
+  </script> -->
+  <script>window.MathJax || document.write('<script type="text/x-mathjax-config">MathJax.Hub.Config({"HTML-CSS":{imageFont:null}});<\/script><script src="libraries/widgets/mathjax/MathJax.js?config=TeX-AMS-MML_HTMLorMML"><\/script>')
+</script>
+<!-- LOAD HIGHLIGHTER JS FILES -->
+  <script src="libraries/highlighters/highlight.js/highlight.pack.js"></script>
+  <script>hljs.initHighlightingOnLoad();</script>
+  <!-- DONE LOADING HIGHLIGHTER JS FILES -->
+   
+  </html>

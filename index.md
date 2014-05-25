@@ -112,3 +112,8 @@ summary(model2)
 ```
 
 
+---
+
+## Thank you for your attension!
+---
+
